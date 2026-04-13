@@ -139,36 +139,3 @@ If `LLM_API_KEY` is empty, the backend uses a built-in mock that streams a hardc
 │
 └── README.md
 ```
-
-## Key Technical Decisions
-
-- **No `EventSource`**: The endpoint is `POST`, so we use `fetch` + manual `ReadableStream` reading with `getReader()` and `TextDecoder`.
-- **JSON-encoded SSE payloads**: Each `data:` field carries a JSON string (`data: "token"\n\n`). This preserves newlines and special characters that would otherwise break the SSE format. The frontend `JSON.parse`s each payload.
-- **OpenAI SDK with configurable `base_url`**: A single `openai` Python SDK supports Groq, OpenAI, Together, and any compatible provider — just change env vars, no code changes.
-- **Remainder buffer**: The SSE parser handles partial chunks — a single `read()` may not deliver a complete SSE event. Leftover data is prepended to the next chunk.
-- **Markdown rendering**: Assistant messages are rendered with `react-markdown` + `@tailwindcss/typography` for proper formatting of headers, lists, and code blocks.
-- **`React.memo` on `ChatMessageItem`**: Prevents re-rendering all message bubbles when only the streaming message updates.
-- **Functional `setState` updates**: Avoids stale closure issues during streaming callbacks.
-- **LLM error handling**: Provider errors (quota, auth, rate limit) are caught and sent as SSE events to the frontend instead of crashing the stream.
-- **Thin route handler**: The FastAPI endpoint delegates entirely to the service layer — no business logic in the route.
-- **pydantic-settings**: Configuration via environment variables with `.env` file support, zero boilerplate.
-
-## Troubleshooting
-
-| Issue | Solution |
-|---|---|
-| CORS errors in browser console | Ensure backend is running on port 8000 and `CORS_ORIGINS` includes `http://localhost:3000` |
-| Frontend shows "Network error" | Verify the backend is running: `curl http://localhost:8000/api/health` |
-| Port already in use | Kill the process: `lsof -ti:8000 \| xargs kill` or use a different port |
-| Python module not found | Ensure you activated the virtual environment and ran `pip install -r requirements.txt` |
-
-## Future Improvements
-
-- **Conversation persistence**: Store chat history in a database or localStorage
-- **Tests**: pytest for backend, React Testing Library + Playwright for frontend
-- **Message virtualization**: For very long conversations, virtualize the message list
-- **Authentication**: Basic auth or JWT to protect the API
-- **Observability**: Structured logging, OpenTelemetry tracing
-- **Rate limiting**: Prevent abuse of the chat endpoint
-- **Docker Compose**: Single command to spin up both services
-- **Conversation context**: Send previous messages to the LLM for multi-turn conversations
