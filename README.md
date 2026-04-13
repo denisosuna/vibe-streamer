@@ -84,7 +84,6 @@ The app will be available at **http://localhost:3000**.
 | `LLM_API_KEY` | `""` (mock mode) | API key for the LLM provider |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | Base URL for any OpenAI-compatible API |
 | `LLM_MODEL` | `llama-3.3-70b-versatile` | Model identifier |
-| `LLM_SYSTEM_PROMPT` | `Respond in the same language the user writes in.` | System prompt sent to the LLM |
 | `LLM_DELAY` | `0.1` | Delay between words in mock mode (seconds) |
 | `CORS_ORIGINS` | `["http://localhost:3000"]` | Allowed CORS origins (JSON array) |
 
