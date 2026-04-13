@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_model: str = "llama-3.3-70b-versatile"
     llm_base_url: str = "https://api.groq.com/openai/v1"
-    llm_system_prompt: str = "Respond in the same language the user writes in."
 
     @property
     def use_llm(self) -> bool:
@@ -19,3 +18,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+LLM_SYSTEM_PROMPT = "Respond in the same language the user writes in."

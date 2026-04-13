@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 
 from openai import AsyncOpenAI, OpenAIError
 
-from app.core.config import settings
+from app.core.config import LLM_SYSTEM_PROMPT, settings
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ async def _stream_llm(prompt: str) -> AsyncGenerator[str, None]:
     stream = await client.chat.completions.create(
         model=settings.llm_model,
         messages=[
-            {"role": "system", "content": settings.llm_system_prompt},
+            {"role": "system", "content": LLM_SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
         ],
         stream=True,
